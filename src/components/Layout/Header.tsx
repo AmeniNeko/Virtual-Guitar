@@ -12,7 +12,7 @@ export function Header() {
           <span className={styles.brandIcon} aria-hidden="true">𝄞</span>
           <h1 className={styles.brandTitle}>Virtual Guitar</h1>
         </div>
-        <div className={styles.headerBadge}>v0.1</div>
+        <div className={styles.headerBadge}>v0.2</div>
       </div>
     </header>
   );

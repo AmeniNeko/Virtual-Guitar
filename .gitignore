@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# 采样音源（约 1.3 GB）不进 Git 历史，见 THIRD_PARTY_SAMPLES.md 与 samples.manifest.json
+public/sounds/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

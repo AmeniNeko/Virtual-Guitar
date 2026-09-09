@@ -5,6 +5,7 @@
  */
 
 import type { NoteName } from '../Music/Note';
+import type { InstrumentId } from '../Audio/types';
 
 export type PlayMode = 'play' | 'chord' | 'scale';
 
@@ -16,11 +17,7 @@ export interface AppState {
   /** 指板品数 */
   fretCount: number;
   /** 音色 */
-  instrument: string;
-  /** 音量 0-1 */
-  volume: number;
-  /** 延音 0-1 */
-  sustain: number;
+  instrument: InstrumentId;
   /** 扫弦速度 ms */
   strumSpeed: number;
   /** 默认力度 0-1 */
@@ -47,9 +44,7 @@ export const DEFAULT_STATE: AppState = {
   tuning: 'standard',
   capo: 0,
   fretCount: 12,
-  instrument: 'acoustic',
-  volume: 0.5,
-  sustain: 0.7,
+  instrument: 'nylon_classical',
   strumSpeed: 30,
   velocity: 0.7,
   humanize: false,

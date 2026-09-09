@@ -1,0 +1,62 @@
+{
+  "$comment": "采样包清单。WAV 不进入 Git 仓库；请按 source 下载后放入 public/sounds/。",
+  "sampleRoot": "public/sounds",
+  "packs": [
+    {
+      "id": "steel_acoustic",
+      "name": "FSS Steel String Guitar",
+      "version": "2020-05-21",
+      "license": "GPL-3.0-or-later with FreePats special exception",
+      "author": "Gary Campion / FlameStudios; assembled by roberto@zenvoid.org",
+      "source": "http://freepats.zenvoid.org/Guitar/steel-acoustic-guitar.html#FSS",
+      "directory": "FSS-SteelStringGuitar-SFZ-20200521",
+      "sfz": "FSS-SteelStringGuitar-SFZ-20200521/FSS-SteelStringGuitar-20200521.sfz",
+      "wavCount": 59,
+      "wavBytes": 26359222,
+      "regions": 59,
+      "format": "16-bit mono 44100Hz"
+    },
+    {
+      "id": "nylon_classical",
+      "name": "Spanish Classical Guitar",
+      "version": "2019-06-18",
+      "license": "CC0-1.0",
+      "author": "roberto@zenvoid.org (FreePats)",
+      "source": "http://freepats.zenvoid.org/Guitar/acoustic-guitar.html",
+      "directory": "SpanishClassicalGuitar-SFZ-20190618",
+      "sfz": "SpanishClassicalGuitar-SFZ-20190618/SpanishClassicalGuitar-20190618.sfz",
+      "wavCount": 48,
+      "wavBytes": 19817028,
+      "regions": 48,
+      "format": "16-bit mono 44100Hz"
+    },
+    {
+      "id": "electric_clean",
+      "name": "Electric Guitar FSBS (clean)",
+      "version": "2026-08-07",
+      "license": "CC0-1.0",
+      "author": "roberto@zenvoid.org (FreePats)",
+      "source": "http://freepats.zenvoid.org/ElectricGuitar/clean-electric-guitar.html",
+      "directory": "EGuitarFSBS-clean-SFZ+WAV-20260807",
+      "sfz": "EGuitarFSBS-clean-SFZ+WAV-20260807/EGuitarFSBS-clean SFZ+WAV-20260807/EGuitarFSBS-clean bridge 20260807.sfz",
+      "wavCount": 122,
+      "wavBytes": 673568788,
+      "regions": 120,
+      "format": "24-bit stereo 48000Hz"
+    },
+    {
+      "id": "electric_overdrive",
+      "name": "Electric Guitar FSBS (dist1)",
+      "version": "2022-09-11",
+      "license": "CC0-1.0",
+      "author": "roberto@zenvoid.org (FreePats)",
+      "source": "http://freepats.zenvoid.org/ElectricGuitar/distorted-electric-guitar.html",
+      "directory": "EGuitarFSBS-dist1-SFZ+WAV-20220911",
+      "sfz": "EGuitarFSBS-dist1-SFZ+WAV-20220911/EGuitarFSBS-dist1 SFZ+WAV-20220911/EGuitarFSBS-dist1 bridge 20220911.sfz",
+      "wavCount": 122,
+      "wavBytes": 662075050,
+      "regions": 120,
+      "format": "24-bit stereo 48000Hz"
+    }
+  ]
+}

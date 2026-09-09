@@ -16,15 +16,14 @@ import { NOTE_NAMES } from '../Music/Note';
 import { TUNINGS } from '../Music/Tuning';
 import { CHORD_TYPES } from '../Music/Chord';
 import { SCALE_TYPES } from '../Music/Scale';
+import { isInstrumentId, LEGACY_INSTRUMENT_IDS, type InstrumentId } from '../Audio/types';
 
 interface AppContextValue {
   state: AppState;
   setTuning: (id: string) => void;
   setCapo: (v: number) => void;
   setFretCount: (v: number) => void;
-  setInstrument: (id: string) => void;
-  setVolume: (v: number) => void;
-  setSustain: (v: number) => void;
+  setInstrument: (id: InstrumentId) => void;
   setStrumSpeed: (v: number) => void;
   setVelocity: (v: number) => void;
   setHumanize: (v: boolean) => void;
@@ -91,7 +90,9 @@ function parseUrlState(): Partial<AppState> {
         if ((NOTE_NAMES as readonly string[]).includes(raw)) result.rootNote = raw as NoteName;
         break;
       case 'instrument':
-        if (['acoustic', 'nylon', 'clean-electric'].includes(raw)) result.instrument = raw;
+        // 兼容 v0 的旧 ID（acoustic / nylon / clean-electric）
+        if (isInstrumentId(raw)) result.instrument = raw;
+        else if (raw in LEGACY_INSTRUMENT_IDS) result.instrument = LEGACY_INSTRUMENT_IDS[raw];
         break;
     }
   }
@@ -125,7 +126,21 @@ function syncStateToUrl(state: AppState): void {
 function loadPersistedState(): Partial<AppState> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Partial<AppState> & { instrument?: string };
+
+    // 旧版本可能留下已失效的 instrument ID，直接回退到默认值
+    if (parsed.instrument !== undefined) {
+      if (isInstrumentId(parsed.instrument)) {
+        // 合法，保持
+      } else if (parsed.instrument in LEGACY_INSTRUMENT_IDS) {
+        parsed.instrument = LEGACY_INSTRUMENT_IDS[parsed.instrument];
+      } else {
+        delete parsed.instrument;
+      }
+    }
+
+    return parsed;
   } catch {
     // 忽略
   }
@@ -173,8 +188,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setCapo: (v) => update({ capo: Math.max(0, Math.min(12, v)) }),
     setFretCount: (v) => update({ fretCount: v }),
     setInstrument: (id) => update({ instrument: id }),
-    setVolume: (v) => update({ volume: v }),
-    setSustain: (v) => update({ sustain: v }),
     setStrumSpeed: (v) => update({ strumSpeed: v }),
     setVelocity: (v) => update({ velocity: v }),
     setHumanize: (v) => update({ humanize: v }),

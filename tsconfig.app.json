@@ -23,5 +23,7 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  /* 测试文件用 node 类型，由 tsconfig.test.json 单独检查 */
+  "exclude": ["src/**/*.test.ts", "src/**/__tests__/**"]
 }

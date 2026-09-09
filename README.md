@@ -1,6 +1,9 @@
 # 🎸 Virtual Guitar
 
-浏览器端虚拟吉他。演奏、和弦、音阶、录音、MIDI 导出，零外部音频依赖。
+浏览器端虚拟吉他。演奏、和弦、音阶、录音、MIDI 导出。
+
+音频层是基于 SFZ 的采样播放引擎：真实吉他采样、32 声部复音、低延迟、
+自然衰减，UI 与音频引擎完全解耦。
 
 ## 快速开始
 
@@ -9,9 +12,43 @@ npm install
 npm run dev
 ```
 
+**采样音源需要单独安装**（约 1.3 GB，不进入 Git 仓库）。
+请按 [THIRD_PARTY_SAMPLES.md](THIRD_PARTY_SAMPLES.md) 的说明下载四套 FreePats 音源，
+解压到 `public/sounds/`。缺少音源时引擎会退化为合成音色，并在控制台给出提示。
+
 ## 技术栈
 
-React 19 · TypeScript · Vite 8 · Web Audio API · Canvas 2D
+React 19 · TypeScript · Vite 8 · Web Audio API · Canvas 2D · Vitest
+
+## 音频引擎
+
+```
+UI ──Pluck / Strum / NoteOn / NoteOff──▶ AudioEngine
+                                           ├── SFZParser → SampleRegion
+                                           ├── SampleCache（LRU，按需解码）
+                                           ├── SampleResolver（键区 / 力度层 / 轮询）
+                                           ├── VoiceManager（32 声部 + 偷声）
+                                           └── EffectChain → 主输出 → 限幅
+```
+
+- **四套音色**：`steel_acoustic`、`nylon_classical`、`electric_clean`、`electric_overdrive`
+- **按需加载**：启动只解析 SFZ 建立索引，WAV 在需要时才解码，LRU 缓存默认 256 MB
+- **不猜采样映射**：音高、力度层、轮询全部来自 SFZ，引擎不做文件名猜测
+- **音频时钟调度**：扫弦与和弦全部排在 `AudioContext.currentTime` 上，不使用 `setTimeout`
+
+调试（仅开发模式）：
+
+```js
+AudioEngine.getStats()            // 声部数 / 缓存 / 命中率 / 乐器状态
+AudioEngineTests.selfCheck()      // 校验四套 SFZ 的解析结果
+AudioEngineTests.rapidRepeat(64)  // 快速重复拨弦测试
+```
+
+## 测试
+
+```bash
+npm test
+```
 
 ## 功能
 

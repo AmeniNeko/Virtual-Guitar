@@ -25,7 +25,7 @@
 }
 
 .brandIcon {
-  font-size: 24px;
+  font-size: 30px;
   color: var(--accent);
   line-height: 1;
 }
@@ -100,12 +100,12 @@
 }
 
 .humanizeBtn {
-  padding: 3px 10px;
-  border-radius: 4px;
+  padding: 3.75px 12.5px;
+  border-radius: 5px;
   border: 1px solid var(--border-light);
   background: var(--bg-primary);
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s;
@@ -120,18 +120,57 @@
   color: var(--accent);
 }
 
+/* 悬浮提示：鼠标悬停或键盘聚焦时出现，移开自动消失 */
+.tooltipWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 220px;
+  padding: 6px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.55;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+  z-index: 20;
+}
+
+.tooltipWrap:hover .tooltip,
+.tooltipWrap:focus-within .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
 .fretCountButtons {
   display: flex;
-  gap: 2px;
+  gap: 2.5px;
 }
 
 .fretCountBtn {
-  padding: 2px 6px;
-  border-radius: 3px;
+  padding: 2.5px 7.5px;
+  border-radius: 3.75px;
   border: 1px solid var(--border-light);
   background: var(--bg-primary);
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: 12.5px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s;
@@ -182,20 +221,20 @@
 
 .capoButtons {
   display: flex;
-  gap: 2px;
+  gap: 2.5px;
 }
 
 .capoBtn {
-  padding: 3px 7px;
-  border-radius: 3px;
+  padding: 3.75px 8.75px;
+  border-radius: 3.75px;
   border: 1px solid var(--border-light);
   background: var(--bg-primary);
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: 12.5px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s;
-  min-width: 26px;
+  min-width: 32.5px;
   text-align: center;
 }
 .capoBtn:hover {
@@ -246,17 +285,17 @@
 .modeTab {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: 10px;
+  padding: 15px 20px;
   border: none;
   background: transparent;
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 16.25px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s;
   text-align: left;
-  border-left: 3px solid transparent;
+  border-left: 3.75px solid transparent;
 }
 .modeTab:hover {
   color: var(--text-secondary);
@@ -275,7 +314,7 @@
 }
 
 .modeTabLabel {
-  font-size: 13px;
+  font-size: 16.25px;
 }
 
 .modeContent {

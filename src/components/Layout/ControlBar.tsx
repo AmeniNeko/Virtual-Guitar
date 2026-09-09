@@ -1,31 +1,27 @@
 /**
  * ControlBar.tsx — 主控制栏
  *
- * 水平排列所有控制组件：Instrument, Tuning, Capo, Volume, Sustain, Strum Speed
+ * 水平排列所有控制组件：Instrument, Tuning, Fret Count, Strum Speed, Velocity, Humanize
+ *
+ * 音量与延音不在这里：
+ * - 音量由「力度」决定（力度同时决定音量与采样层）
+ * - 延音由用户按住鼠标/按键的时长决定（松开即进入 release）
  */
 
 import { useAppContext } from '../../State/AppContext';
 import { TUNINGS } from '../../Music/Tuning';
 import { FRET_COUNT_OPTIONS } from '../../Music/GuitarState';
-import { AudioEngine } from '../../Audio/AudioEngine';
+import { InstrumentSelector } from '../Controls/InstrumentSelector';
 import styles from './Layout.module.css';
 
 export function ControlBar() {
-  const { state, setTuning, setFretCount, setVolume, setSustain, setStrumSpeed, setVelocity, setHumanize } = useAppContext();
-
-  const handleVolumeChange = (v: number) => {
-    setVolume(v);
-    AudioEngine.setVolume(v);
-  };
-
-  const handleSustainChange = (v: number) => {
-    setSustain(v);
-    // state.sustain 是 0-1 比例，转换为 0.1-5 秒
-    AudioEngine.setSustainTime(0.1 + v * 4.9);
-  };
+  const { state, setTuning, setFretCount, setStrumSpeed, setVelocity, setHumanize } = useAppContext();
 
   return (
     <div className={styles.controlBar}>
+      {/* Instrument */}
+      <InstrumentSelector />
+
       {/* Tuning */}
       <div className={styles.controlGroup}>
         <label className={styles.controlLabel} htmlFor="tuning-select">调弦</label>
@@ -60,36 +56,6 @@ export function ControlBar() {
         </div>
       </div>
 
-      {/* Volume */}
-      <div className={styles.controlGroup}>
-        <label className={styles.controlLabel} htmlFor="volume-slider">音量: {Math.round(state.volume * 100)}%</label>
-        <input
-          id="volume-slider"
-          type="range"
-          className={styles.controlSlider}
-          min={0}
-          max={100}
-          value={Math.round(state.volume * 100)}
-          onChange={(e) => handleVolumeChange(Number(e.target.value) / 100)}
-          aria-label="音量控制"
-        />
-      </div>
-
-      {/* Sustain */}
-      <div className={styles.controlGroup}>
-        <label className={styles.controlLabel} htmlFor="sustain-slider">延音: {Math.round(state.sustain * 100)}%</label>
-        <input
-          id="sustain-slider"
-          type="range"
-          className={styles.controlSlider}
-          min={0}
-          max={100}
-          value={Math.round(state.sustain * 100)}
-          onChange={(e) => handleSustainChange(Number(e.target.value) / 100)}
-          aria-label="延音控制"
-        />
-      </div>
-
       {/* Strum Speed */}
       <div className={styles.controlGroup}>
         <label className={styles.controlLabel} htmlFor="strum-slider">扫弦: {state.strumSpeed}ms</label>
@@ -105,7 +71,7 @@ export function ControlBar() {
         />
       </div>
 
-      {/* Velocity */}
+      {/* Velocity —— 同时决定音量与采样层 */}
       <div className={styles.controlGroup}>
         <label className={styles.controlLabel} htmlFor="velocity-slider">力度: {Math.round(state.velocity * 100)}%</label>
         <input
@@ -116,21 +82,29 @@ export function ControlBar() {
           max={100}
           value={Math.round(state.velocity * 100)}
           onChange={(e) => setVelocity(Number(e.target.value) / 100)}
-          aria-label="力度控制"
+          aria-label="演奏力度（同时决定音量）"
+          title="力度越大，声音越响，同时会切换到音源中对应力度层的采样"
         />
       </div>
 
       {/* Humanize */}
       <div className={styles.controlGroup}>
         <label className={styles.controlLabel}>人性化</label>
-        <button
-          className={`${styles.humanizeBtn} ${state.humanize ? styles.humanizeBtnActive : ''}`}
-          onClick={() => setHumanize(!state.humanize)}
-          aria-pressed={state.humanize}
-          aria-label={`人性化 ${state.humanize ? '开启' : '关闭'}`}
-        >
-          {state.humanize ? 'ON' : 'OFF'}
-        </button>
+        <span className={styles.tooltipWrap}>
+          <button
+            className={`${styles.humanizeBtn} ${state.humanize ? styles.humanizeBtnActive : ''}`}
+            onClick={() => setHumanize(!state.humanize)}
+            aria-pressed={state.humanize}
+            aria-describedby="humanize-tip"
+            aria-label={`人性化 ${state.humanize ? '开启' : '关闭'}`}
+          >
+            {state.humanize ? 'ON' : 'OFF'}
+          </button>
+          <span id="humanize-tip" role="tooltip" className={styles.tooltip}>
+            开启后，每次拨弦的时间与力度都会有极轻微的随机变化，
+            让连续演奏听起来更自然，不像机器在重复。
+          </span>
+        </span>
       </div>
     </div>
   );

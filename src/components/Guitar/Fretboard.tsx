@@ -52,6 +52,8 @@ export function Fretboard() {
   const [hoverCell, setHoverCell] = useState<FretPosition | null>(null);
   const downRef = useRef(false);
   const playedRef = useRef<Set<string>>(new Set());
+  /** 本次手势中被"点响"的音，松开时统一 noteOff（扫弦产生的音不在此列，让它们自然衰减） */
+  const heldNotesRef = useRef<number[]>([]);
   const fxRef = useRef<ClickFX>({ x: 0, y: 0, note: '', on: false });
   const redrawRef = useRef(false);
 
@@ -110,19 +112,23 @@ export function Fretboard() {
     onNoteOn: () => { if (navigator.vibrate) navigator.vibrate(10); },
   });
 
-  // 扫弦
+  // 扫弦：音高由 UI 提供，时序与人性化交给引擎在音频时钟上排程
   const handleStrum = useCallback((ev: StrumEvent) => {
-    const dir = ev.direction === 'down'
-      ? [...ev.stringsCrossed].sort((a, b) => b - a)
-      : [...ev.stringsCrossed].sort((a, b) => a - b);
-    const delay = Math.max(10, Math.min(80, ev.speed / dir.length));
-    dir.forEach((s, i) => {
-      const d = i * delay + (state.humanize ? (Math.random() - 0.5) * 10 : 0);
-      const v = state.humanize ? velocity * (0.85 + Math.random() * 0.3) : velocity;
-      const m = tuning.strings[s] + capo;
-      setTimeout(() => { AudioEngine.playNote({ midi: m, velocity: v }); GlobalRecorder.noteOn(m, s, 0, v); }, Math.max(0, d));
-    });
-  }, [state.tuning, capo, state.humanize, velocity, tuning]);
+    const notes = ev.stringsCrossed.map((s) => ({
+      string: s,
+      fret: 0,
+      midiNote: tuning.strings[s] + capo,
+    }));
+    const interval = Math.max(
+      0.005,
+      Math.min(0.03, ev.speed / 1000 / Math.max(1, notes.length)),
+    );
+
+    AudioEngine.setHumanize(state.humanize);
+    AudioEngine.strum({ direction: ev.direction, notes, velocity, interval });
+
+    notes.forEach((n) => GlobalRecorder.noteOn(n.midiNote, n.string, 0, velocity));
+  }, [capo, state.humanize, velocity, tuning]);
 
   const { handlePointerDown, handlePointerMove, handlePointerUp } = useStrum({
     stringYPositions: Array.from({ length: 6 }, (_, s) => L.topPad + s * L.stringGap),
@@ -144,11 +150,24 @@ export function Fretboard() {
   // 触发音符 + 显示特效
   const triggerNote = useCallback((pos: FretPosition) => {
     const v = state.humanize ? velocity * (0.85 + Math.random() * 0.3) : velocity;
-    AudioEngine.playNote({ midi: pos.note.midi, velocity: v });
+    AudioEngine.setHumanize(state.humanize);
+    AudioEngine.pluck({
+      midiNote: pos.note.midi,
+      velocity: v,
+      string: pos.stringIdx,
+      fret: pos.fret,
+    });
+    heldNotesRef.current.push(pos.note.midi);
     GlobalRecorder.noteOn(pos.note.midi, pos.stringIdx, pos.fret, v);
     fxRef.current = { x: pos.x, y: pos.y, note: pos.note.name + pos.note.octave, on: true };
     redrawRef.current = true;
   }, [state.humanize, velocity]);
+
+  /** 松开：让被点响的音进入 release，采样自然衰减而不是硬切 */
+  const releaseHeldNotes = useCallback(() => {
+    for (const midi of heldNotesRef.current) AudioEngine.noteOff({ midiNote: midi });
+    heldNotesRef.current = [];
+  }, []);
 
   // 隐藏特效
   const hideFx = useCallback(() => {
@@ -178,11 +197,14 @@ export function Fretboard() {
     setHoverCell(null);
     downRef.current = false;
     playedRef.current.clear();
+    releaseHeldNotes();
     hideFx();
-  }, [hideFx]);
+  }, [hideFx, releaseHeldNotes]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0) return;
+    // 浏览器要求用户手势才能启动/恢复 AudioContext
+    AudioEngine.unlock();
     downRef.current = true;
     playedRef.current.clear();
     handlePointerDown(e.clientX, e.clientY, e.currentTarget.getBoundingClientRect(), 1);
@@ -199,9 +221,11 @@ export function Fretboard() {
   const handleMouseUp = useCallback((e: React.MouseEvent) => {
     downRef.current = false;
     playedRef.current.clear();
-    hideFx();
+    // 先让扫弦判定跑完，再释放"点响"的音（扫弦音不在其中）
     handlePointerUp(e.clientY, e.currentTarget.getBoundingClientRect(), 1);
-  }, [hideFx, handlePointerUp]);
+    releaseHeldNotes();
+    hideFx();
+  }, [hideFx, handlePointerUp, releaseHeldNotes]);
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     // 点击逻辑已由 mousedown/mouseup 处理，此处无需操作
@@ -211,6 +235,7 @@ export function Fretboard() {
   // Touch
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
+    AudioEngine.unlock();
     const t = e.touches[0];
     if (!t) return;
     const c = cvsRef.current;
@@ -242,8 +267,9 @@ export function Fretboard() {
     if (!c) return;
     const r = c.getBoundingClientRect();
     handlePointerUp(t.clientY, r, parseFloat(c.style.height) / r.height);
+    releaseHeldNotes();
     hideFx();
-  }, [handlePointerUp, hideFx]);
+  }, [handlePointerUp, hideFx, releaseHeldNotes]);
 
   // 键盘回调
   const getKbPos = useCallback((key: string) => {

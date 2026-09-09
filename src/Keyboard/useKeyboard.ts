@@ -27,6 +27,8 @@ export function useKeyboard(options: UseKeyboardOptions) {
   const { enabled, velocity, onNoteOn, onNoteOff } = options;
   const [activeKeys, setActiveKeys] = useState<Map<string, ActiveKey>>(new Map());
   const pressedKeysRef = useRef<Set<string>>(new Set());
+  /** key → 该次按键实际触发的 MIDI 音高（松开时用它精确 noteOff） */
+  const pressedMidiRef = useRef<Map<string, number>>(new Map());
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -49,11 +51,15 @@ export function useKeyboard(options: UseKeyboardOptions) {
 
       // 标记为按下
       pressedKeysRef.current.add(key);
+      pressedMidiRef.current.set(key, note.midi);
 
-      // 播放音符
-      AudioEngine.playNote({
-        midi: note.midi,
+      // 播放音符（键盘本身即用户手势，顺带解锁 AudioContext）
+      AudioEngine.unlock();
+      AudioEngine.pluck({
+        midiNote: note.midi,
         velocity,
+        string: note.stringIdx,
+        fret: note.fret,
       });
 
       // 更新视觉状态
@@ -77,6 +83,12 @@ export function useKeyboard(options: UseKeyboardOptions) {
 
       pressedKeysRef.current.delete(key);
 
+      const midi = pressedMidiRef.current.get(key);
+      if (midi !== undefined) {
+        AudioEngine.noteOff({ midiNote: midi });
+        pressedMidiRef.current.delete(key);
+      }
+
       // 更新视觉状态
       setActiveKeys((prev) => {
         const next = new Map(prev);
@@ -91,6 +103,8 @@ export function useKeyboard(options: UseKeyboardOptions) {
 
   // 窗口失焦时清除所有按键
   const handleBlur = useCallback(() => {
+    for (const midi of pressedMidiRef.current.values()) AudioEngine.noteOff({ midiNote: midi });
+    pressedMidiRef.current.clear();
     pressedKeysRef.current.clear();
     setActiveKeys(new Map());
   }, []);
