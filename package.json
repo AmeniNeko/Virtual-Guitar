@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "pack:samples": "node scripts/pack-samples.mjs",
+    "pack:portable": "node scripts/pack-portable.mjs",
     "fetch:samples": "node scripts/fetch-samples.mjs",
     "preview": "vite preview"
   },

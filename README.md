@@ -86,18 +86,26 @@ npm run build    # 产物在 dist/
 
 将 `dist/` 部署到任意静态托管（Vercel / Netlify / GitHub Pages）。
 
-## 采样分发（维护者）
+## 发行（维护者）
 
-采样体积过大，不进入 Git 历史，改用 GitHub Release 分发：
+采样体积过大，不进入 Git 历史。测试版以**便携包**分发：一个 zip 里同时包含
+程序和采样，下载解压后双击 `start.bat`（或 `./start.sh`）即可运行。
 
 ```bash
-npm run pack:samples      # 打包成 dist-samples/*.zip，并输出每个包的 sha256
+npm run fetch:samples     # 1. 安装采样（仅首次需要）
+npm run build             # 2. 构建（public/sounds 会被复制进 dist/）
+npm run pack:portable     # 3. 产出 dist-samples/VirtualGuitar-v<版本>-portable.zip
 ```
 
-1. 在 GitHub 上 Draft a new release，选择 tag（如 `v0.2`）
-2. 把 `dist-samples/` 里的四个 zip 拖进附件区
-3. 把 sha256 贴进 Release 说明
-4. Publish 后，用户执行 `npm run fetch:samples` 即可安装
+把该 zip 上传到 GitHub Release 即可。用户不需要装 Node 之外的东西——
+便携包自带一个本地静态服务器（`server.mjs`），因为浏览器禁止 `file://`
+页面加载采样。
+
+需要单独分发采样包（给跑源码的人）时：
+
+```bash
+npm run pack:samples      # → dist-samples/<id>.zip，并输出每个包的 sha256
+```
 
 发布新版本时，记得同步 `scripts/fetch-samples.mjs` 顶部的 `DEFAULT_RELEASE_URL`。
 
