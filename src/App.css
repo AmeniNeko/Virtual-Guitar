@@ -1,0 +1,116 @@
+/* App.css — 全局基础样式 + 新布局 */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #111111;
+  --bg-panel: #0d0d0d;
+  --border: #1a1a1a;
+  --border-light: #2a2a2a;
+  --accent: #7EBCF5;
+  --accent-dim: rgba(126, 188, 245, 0.15);
+  --accent-glow: rgba(126, 188, 245, 0.4);
+  --text-primary: #e0e0e0;
+  --text-secondary: #888;
+  --text-muted: #555;
+  --danger: #f85149;
+  --success: #4CAF50;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Segoe UI', 'Microsoft YaHei', -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+/* ===== 新布局：侧栏 + 主区域 ===== */
+
+.appBody {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.appSidebar {
+  width: 25%;
+  min-width: 240px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: var(--bg-secondary);
+  overflow-y: auto;
+}
+
+.appMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+
+::selection {
+  background: var(--accent-dim);
+  color: #fff;
+}
+
+/* ===== 响应式 ===== */
+
+@media (max-width: 768px) {
+  .appBody {
+    flex-direction: column;
+  }
+
+  .appSidebar {
+    width: 100%;
+    max-width: none;
+    min-width: unset;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .appMain {
+    flex: 1;
+  }
+}

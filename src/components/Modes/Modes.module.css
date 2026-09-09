@@ -1,0 +1,252 @@
+/* Modes.module.css — 和弦/音阶面板样式（新配色） */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sectionTitle {
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.noteGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.noteBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.noteBtn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.noteBtnActive {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #000;
+}
+
+.chordGrid,
+.scaleGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.chordBtn,
+.scaleBtn {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  color: var(--text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chordBtn:hover,
+.scaleBtn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.chordBtnActive,
+.scaleBtnActive {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* ===== Chord Detail ===== */
+
+.chordDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba(126, 188, 245, 0.04);
+  border: 1px solid rgba(126, 188, 245, 0.1);
+}
+
+.chordDetailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chordName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.chordPlayback {
+  display: flex;
+  gap: 3px;
+}
+
+.playbackGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.groupSection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.groupLabel {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.groupButtons {
+  display: flex;
+  gap: 3px;
+}
+
+.groupBtn {
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  color: var(--text-muted);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.groupBtn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.groupBtnActive {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.playBtn {
+  padding: 3px 7px;
+  border-radius: 3px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  color: var(--text-muted);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.playBtn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  background: var(--accent-dim);
+}
+
+.chordDiagram {
+  display: flex;
+  justify-content: center;
+}
+
+.chordIntervals,
+.scaleIntervals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.intervalTag {
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: rgba(126, 188, 245, 0.12);
+  color: var(--accent);
+  font-size: 9px;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.chordNotes,
+.scaleNotes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+}
+
+.chordNotesLabel,
+.scaleNotesLabel {
+  color: var(--text-muted);
+}
+
+.chordNoteTag,
+.scaleNoteTag {
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ===== Scale Detail ===== */
+
+.scaleDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba(126, 188, 245, 0.04);
+  border: 1px solid rgba(126, 188, 245, 0.1);
+}
+
+.scaleName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.scaleFormula {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+}
+
+.scaleFormulaLabel {
+  color: var(--text-muted);
+}
+
+.scaleFormulaStep {
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: rgba(126, 188, 245, 0.08);
+  color: var(--text-secondary);
+  font-size: 9px;
+  font-weight: 600;
+  font-family: monospace;
+}

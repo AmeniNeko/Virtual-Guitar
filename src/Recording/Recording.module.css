@@ -1,0 +1,28 @@
+/* Recording.module.css — 录音系统样式 */
+
+.timelineContainer {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #0d1117;
+  scrollbar-width: thin;
+  scrollbar-color: #30363d #0d1117;
+}
+
+.timelineContainer::-webkit-scrollbar {
+  height: 6px;
+}
+.timelineContainer::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+.timelineContainer::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 3px;
+}
+
+.timelineCanvas {
+  display: block;
+  cursor: pointer;
+}
