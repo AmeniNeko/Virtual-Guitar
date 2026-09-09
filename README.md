@@ -12,9 +12,14 @@ npm install
 npm run dev
 ```
 
-**采样音源需要单独安装**（约 1.3 GB，不进入 Git 仓库）。
-请按 [THIRD_PARTY_SAMPLES.md](THIRD_PARTY_SAMPLES.md) 的说明下载四套 FreePats 音源，
-解压到 `public/sounds/`。缺少音源时引擎会退化为合成音色，并在控制台给出提示。
+**采样音源需要单独安装**（约 1.3 GB，不进入 Git 仓库）：
+
+```bash
+npm run fetch:samples     # 从 GitHub Release 下载并解压到 public/sounds/
+```
+
+也可以按 [THIRD_PARTY_SAMPLES.md](THIRD_PARTY_SAMPLES.md) 手动下载四套 FreePats 音源。
+缺少音源时应用仍可运行，但会退化为合成音色，控制台会给出提示。
 
 ## 技术栈
 
@@ -80,6 +85,21 @@ npm run build    # 产物在 dist/
 ```
 
 将 `dist/` 部署到任意静态托管（Vercel / Netlify / GitHub Pages）。
+
+## 采样分发（维护者）
+
+采样体积过大，不进入 Git 历史，改用 GitHub Release 分发：
+
+```bash
+npm run pack:samples      # 打包成 dist-samples/*.zip，并输出每个包的 sha256
+```
+
+1. 在 GitHub 上 Draft a new release，选择 tag（如 `v0.2`）
+2. 把 `dist-samples/` 里的四个 zip 拖进附件区
+3. 把 sha256 贴进 Release 说明
+4. Publish 后，用户执行 `npm run fetch:samples` 即可安装
+
+发布新版本时，记得同步 `scripts/fetch-samples.mjs` 顶部的 `DEFAULT_RELEASE_URL`。
 
 ## License
 
